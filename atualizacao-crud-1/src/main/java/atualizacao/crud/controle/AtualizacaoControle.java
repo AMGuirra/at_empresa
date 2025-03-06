@@ -116,4 +116,34 @@ public class AtualizacaoControle {
 		attributes.addFlashAttribute("mensagem", "Atualização alterada com sucesso!");
 		return "redirect:/atualizacoes/listar-atualizacoes";
 	}
+
+	@GetMapping("/alterar-status/{id}")
+	public String mostrarFormularioAlterarStatus(@PathVariable Long id, Model model,
+			RedirectAttributes redirectAttributes) {
+		try {
+			Atualizacao objetoAtualizacao = atualizacaoServico.buscarAtualizacaoPorId(id);
+			List<Status> todosStatus = statusServico.buscarTodosStatus(); // Supondo que você tenha um serviço para
+																			// buscar todos os status
+
+			model.addAttribute("objetoAtualizacao", objetoAtualizacao);
+			model.addAttribute("todosStatus", todosStatus);
+			return "alterar-status-atualizacao"; // Substitua pelo nome do seu template Thymeleaf
+		} catch (AtualizacaoNotFoundException e) {
+			redirectAttributes.addFlashAttribute("mensagemErro", e.getMessage());
+			return "redirect:/atualizacoes/listar-atualizacoes"; // Redireciona para a lista de atualizações se não
+																	// encontrar
+		}
+	}
+
+	@PostMapping("/alterar-status/{id}")
+	public String alterarStatus(@PathVariable Long id, @RequestParam Long statusId,
+			RedirectAttributes redirectAttributes) {
+		try {
+			atualizacaoServico.alterarStatus(id, statusId);
+			redirectAttributes.addFlashAttribute("mensagem", "Status alterado com sucesso!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao alterar o status.");
+		}
+		return "redirect:/atualizacoes/listar-atualizacoes";
+	}
 }
