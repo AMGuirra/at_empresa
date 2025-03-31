@@ -39,4 +39,6 @@ public interface AtualizacaoRepositorio extends JpaRepository<Atualizacao, Long>
 	boolean existsByStatusId(@Param("statusId") Long statusId);
 	
 	List<Atualizacao> findByStatusNome(String statusNome);
+
+	List<Atualizacao> findAllByOrderByIdAsc();
 }
