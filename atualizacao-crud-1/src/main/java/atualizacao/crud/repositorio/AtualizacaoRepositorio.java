@@ -37,4 +37,6 @@ public interface AtualizacaoRepositorio extends JpaRepository<Atualizacao, Long>
 	// Verifica se existe alguma atualização associada a um status
 	@Query("SELECT COUNT(a) > 0 FROM Atualizacao a WHERE a.status.id = :statusId")
 	boolean existsByStatusId(@Param("statusId") Long statusId);
+	
+	List<Atualizacao> findByStatusNome(String statusNome);
 }

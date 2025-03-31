@@ -93,4 +93,8 @@ public class AtualizacaoServico {
         // Salva a atualização com o novo status
         salvarAtualizacao(atualizacao);
     }
+    
+    public List<Atualizacao> buscarAtualizacoesPorStatus(String statusNome) {
+        return atualizacaoRepositorio.findByStatusNome(statusNome);
+    }
 }

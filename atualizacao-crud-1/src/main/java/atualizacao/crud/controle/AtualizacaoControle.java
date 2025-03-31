@@ -10,6 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import atualizacao.crud.excecao.AtualizacaoNotFoundException;
 import atualizacao.crud.modelo.Atualizacao;
 import atualizacao.crud.modelo.Status;
+import atualizacao.crud.repositorio.AtualizacaoRepositorio;
 import atualizacao.crud.servico.AtualizacaoServico;
 import atualizacao.crud.servico.ClienteServico;
 import atualizacao.crud.servico.StatusServico;
@@ -32,6 +33,9 @@ public class AtualizacaoControle {
 
 	@Autowired
 	private StatusServico statusServico;
+
+	@Autowired
+	private AtualizacaoRepositorio atualizacaoRepositorio;
 
 	@GetMapping("/novo")
 	public String exibirFormularioNovaAtualizacao(Model model) {
@@ -145,5 +149,36 @@ public class AtualizacaoControle {
 			redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao alterar o status.");
 		}
 		return "redirect:/atualizacoes/listar-atualizacoes";
+	}
+
+	@GetMapping("/filtrar-por-status")
+	public String filtrarAtualizacoesPorStatus(@RequestParam String status, Model model) {
+		List<Atualizacao> atualizacoesFiltradas = atualizacaoServico.buscarAtualizacoesPorStatus(status);
+		List<Status> listaStatus = statusServico.buscarTodosStatus();
+		model.addAttribute("listaAtualizacoes", atualizacoesFiltradas);
+		model.addAttribute("listaStatus", listaStatus);
+		return "listar-atualizacoes";
+	}
+
+	// Carrega a tela de edição
+	@GetMapping("/editar-observacao/{id}")
+	public String editarObservacao(@PathVariable Long id, Model model) {
+		Atualizacao atualizacao = atualizacaoRepositorio.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("ID inválido: " + id));
+
+		model.addAttribute("atualizacao", atualizacao);
+		return "alterar-observacao"; // Nome do template Thymeleaf
+	}
+
+	// Salva a observação
+	@PostMapping("/salvar-observacao/{id}")
+	public String salvarObservacao(@PathVariable Long id, String obs) {
+		Atualizacao atualizacao = atualizacaoRepositorio.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("ID inválido: " + id));
+
+		atualizacao.setObs(obs); // Atualiza apenas o campo 'obs'
+		atualizacaoRepositorio.save(atualizacao);
+
+		return "redirect:/atualizacoes/listar-atualizacoes"; // Redireciona para a lista de atualizações
 	}
 }

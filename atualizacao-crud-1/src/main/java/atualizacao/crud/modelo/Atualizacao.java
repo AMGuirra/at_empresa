@@ -11,7 +11,7 @@ public class Atualizacao {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String obs; // Certifique-se de que este campo existe
+	private String obs;
 
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
@@ -29,7 +29,7 @@ public class Atualizacao {
 	@ManyToOne
 	@JoinColumn(name = "status_id", nullable = false)
 	@NotNull(message = "O status é obrigatório")
-	private Status status; // Cada Atualizacao tem um único Status
+	private Status status;
 
 	// Getters e Setters
 	public Long getId() {
