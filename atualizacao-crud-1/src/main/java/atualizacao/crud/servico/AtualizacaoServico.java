@@ -1,15 +1,15 @@
 package atualizacao.crud.servico;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+
 import atualizacao.crud.excecao.AtualizacaoNotFoundException;
 import atualizacao.crud.modelo.Atualizacao;
 import atualizacao.crud.modelo.Status;
 import atualizacao.crud.repositorio.AtualizacaoRepositorio;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class AtualizacaoServico {
