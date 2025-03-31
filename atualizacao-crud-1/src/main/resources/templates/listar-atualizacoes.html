@@ -67,15 +67,6 @@
             <span th:text="${mensagem}"></span>
         </div>
 
-        <!-- Filtro de Status -->
-        <div class="filter-container">
-            <label for="filtroStatus">Filtrar por Status:</label>
-            <select id="filtroStatus" class="form-select">
-                <option value="">Todos</option>
-                <option th:each="status : ${listaStatus}" th:value="${status.nome}" th:text="${status.nome}"></option>
-            </select>
-        </div>
-
         <!-- Tabela de Atualizações -->
         <table id="tabelaAtualizacoes" class="table table-striped">
             <thead>

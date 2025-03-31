@@ -172,12 +172,17 @@ public class AtualizacaoControle {
 
 	// Salva a observação
 	@PostMapping("/salvar-observacao/{id}")
-	public String salvarObservacao(@PathVariable Long id, String obs) {
-		Atualizacao atualizacao = atualizacaoRepositorio.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("ID inválido: " + id));
+	public String salvarObservacao(
+	    @PathVariable Long id,
+	    @RequestParam String obs,
+	    @RequestParam Integer qtPc) {
 
-		atualizacao.setObs(obs); // Atualiza apenas o campo 'obs'
-		atualizacaoRepositorio.save(atualizacao);
+	    Atualizacao atualizacao = atualizacaoRepositorio.findById(id)
+	        .orElseThrow(() -> new IllegalArgumentException("ID inválido: " + id));
+	    
+	    atualizacao.setObs(obs); // Atualiza a observação
+	    atualizacao.setQtPc(qtPc); // Atualiza a quantidade de peças
+	    atualizacaoRepositorio.save(atualizacao);
 
 		return "redirect:/atualizacoes/listar-atualizacoes"; // Redireciona para a lista de atualizações
 	}
