@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -28,6 +29,9 @@ public class ExportExcelController {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Atualizações");
 
+        // Formatter para datas no padrão brasileiro
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         // Configura o cabeçalho
         String[] columns = {
             "ID", 
@@ -42,13 +46,16 @@ public class ExportExcelController {
         };
 
         // Estilo do cabeçalho
-        CellStyle headerStyle = getHeaderStyle(workbook);
+        CellStyle headerStyle = createHeaderStyle(workbook);
         Row headerRow = sheet.createRow(0);
         for (int i = 0; i < columns.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(columns[i]);
             cell.setCellStyle(headerStyle);
         }
+
+        // Estilo para células de data
+        CellStyle dateCellStyle = createDateCellStyle(workbook);
 
         // Preenche as linhas com os dados
         int rowNum = 1;
@@ -58,12 +65,12 @@ public class ExportExcelController {
             // ID
             row.createCell(0).setCellValue(atualizacao.getId());
 
-            // Cliente (com verificação de null)
+            // Cliente
             row.createCell(1).setCellValue(
                 atualizacao.getCliente() != null ? atualizacao.getCliente().getNome() : "N/A"
             );
 
-            // Usuário (com verificação de null)
+            // Usuário
             row.createCell(2).setCellValue(
                 atualizacao.getUsuario() != null ? atualizacao.getUsuario().getNome() : "N/A"
             );
@@ -75,16 +82,10 @@ public class ExportExcelController {
                 atualizacao.getStatus() != null ? atualizacao.getStatus().getNome() : "N/A"
             );
 
-            // Datas (formatadas como String)
-            row.createCell(6).setCellValue(
-                atualizacao.getDtPedido() != null ? atualizacao.getDtPedido().toString() : "N/A"
-            );
-            row.createCell(7).setCellValue(
-                atualizacao.getDtInicio() != null ? atualizacao.getDtInicio().toString() : "N/A"
-            );
-            row.createCell(8).setCellValue(
-                atualizacao.getDtFim() != null ? atualizacao.getDtFim().toString() : "N/A"
-            );
+            // Datas formatadas
+            formatDateCell(row, 6, atualizacao.getDtPedido(), dateFormatter, dateCellStyle);
+            formatDateCell(row, 7, atualizacao.getDtInicio(), dateFormatter, dateCellStyle);
+            formatDateCell(row, 8, atualizacao.getDtFim(), dateFormatter, dateCellStyle);
         }
 
         // Ajusta o tamanho das colunas
@@ -99,8 +100,7 @@ public class ExportExcelController {
         workbook.close();
     }
 
-    // Estilo profissional para o cabeçalho
-    private CellStyle getHeaderStyle(Workbook workbook) {
+    private CellStyle createHeaderStyle(Workbook workbook) {
         CellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
         font.setBold(true);
@@ -109,6 +109,28 @@ public class ExportExcelController {
         style.setFillForegroundColor(IndexedColors.BLUE.getIndex());
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setAlignment(HorizontalAlignment.CENTER);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
         return style;
+    }
+
+    private CellStyle createDateCellStyle(Workbook workbook) {
+        CellStyle style = workbook.createCellStyle();
+        style.setDataFormat(workbook.createDataFormat().getFormat("dd/MM/yyyy"));
+        style.setAlignment(HorizontalAlignment.CENTER);
+        return style;
+    }
+
+    private void formatDateCell(Row row, int cellIndex, java.time.LocalDate date, 
+                              DateTimeFormatter formatter, CellStyle style) {
+        Cell cell = row.createCell(cellIndex);
+        if (date != null) {
+            cell.setCellValue(date.format(formatter));
+            cell.setCellStyle(style);
+        } else {
+            cell.setCellValue("N/A");
+        }
     }
 }

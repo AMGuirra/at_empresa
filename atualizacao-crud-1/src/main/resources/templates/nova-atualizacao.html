@@ -142,7 +142,7 @@
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label">Observações:</label>
                         <div class="col-sm-5">
-                            <textarea class="form-control" th:field="*{obs}" placeholder="Insira as observações"></textarea>
+                            <textarea class="form-control" th:field="*{obs}" placeholder="Insira as observações" oninput="this.value = this.value.toUpperCase()"></textarea>
                         </div>
                         <div class="col-sm-5">
                             <span class="mensagem" th:if="${#fields.hasErrors('obs')}" th:errors="*{obs}"></span>
@@ -175,6 +175,27 @@
                 placeholder: "Selecione uma opção", // Texto de placeholder
                 allowClear: true // Permite limpar a seleção
             });
+        });
+    </script>
+
+    <!-- Script para garantir que o campo obs fique em CAIXA ALTA -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Converte para maiúsculas enquanto digita (redundante com o oninput, mas como backup)
+            const obsField = document.querySelector('[th\\:field="*{obs}"]');
+            if (obsField) {
+                obsField.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
+                
+                // Também converte no submit (para garantir)
+                const form = document.querySelector('form[th\\:action="@{/atualizacoes/gravar}"]');
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        obsField.value = obsField.value.toUpperCase();
+                    });
+                }
+            }
         });
     </script>
 </body>
