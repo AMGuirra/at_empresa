@@ -47,11 +47,11 @@
 
 		<!-- Formulário de edição de usuário -->
 		<form th:action="@{/usuarios/editar/{id}(id=${usuario.id})}"
-			method="post" th:object="${usuario}">
+			method="post" th:object="${usuario}" onsubmit="return formatarNome()">
 			<div class="mb-3 form-group">
 				<label for="nome" class="form-label">Nome:</label> <input
 					type="text" class="form-control" id="nome" th:field="*{nome}"
-					required
+					required oninput="this.value = this.value.toUpperCase()"
 					th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid' : ''">
 				<div class="text-danger" th:if="${#fields.hasErrors('nome')}"
 					th:errors="*{nome}">Nome inválido</div>
@@ -80,5 +80,18 @@
 	<!-- Scripts -->
 	<script th:src="@{/jquery-3.6.0-dist/jquery-3.6.0.min.js}"></script>
 	<script th:src="@{/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js}"></script>
+	<script>
+		// Converte para maiúsculas enquanto digita
+		document.getElementById('nome').addEventListener('input', function() {
+			this.value = this.value.toUpperCase();
+		});
+
+		// Garante que o nome será enviado em maiúsculas mesmo se o usuário colar conteúdo
+		function formatarNome() {
+			var nomeInput = document.getElementById('nome');
+			nomeInput.value = nomeInput.value.toUpperCase();
+			return true;
+		}
+	</script>
 </body>
 </html>
