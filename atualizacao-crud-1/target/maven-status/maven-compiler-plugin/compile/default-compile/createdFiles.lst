@@ -1,6 +1,7 @@
 atualizacao\crud\controle\AtualizacaoControle.class
 atualizacao\crud\modelo\Usuario.class
 atualizacao\crud\modelo\Atualizacao.class
+atualizacao\crud\controle\ExportExcelController.class
 atualizacao\crud\repositorio\StatusRepositorio.class
 atualizacao\crud\controle\ClienteControle.class
 atualizacao\crud\servico\AtualizacaoServico.class
