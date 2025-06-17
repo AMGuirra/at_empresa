@@ -60,7 +60,7 @@ public class AtualizacaoControle {
 		novaAtualizacao.setStatus(statusSelecionado);
 		atualizacaoServico.salvarAtualizacao(novaAtualizacao);
 		attributes.addFlashAttribute("mensagem", "Atualização salva com sucesso!");
-		return "redirect:/atualizacoes/listar-atualizacoes";
+		return "redirect:/atualizacoes/novo";
 	}
 
 	@GetMapping("/listar-atualizacoes")
